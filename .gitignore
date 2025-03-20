@@ -1,0 +1,86 @@
+login/
+# ========================
+# IGNORAR login-next (Next.js)
+# ========================
+
+# Dependencias y paquetes
+login-next/node_modules/
+login-next/.pnp/
+login-next/.pnp.*
+
+# Archivos de compilación
+login-next/.next/
+login-next/out/
+login-next/build/
+
+# Configuración y Entorno
+login-next/.env*
+login-next/.vercel
+
+# Archivos de prueba y cobertura
+login-next/coverage/
+
+# Archivos de depuración
+login-next/npm-debug.log*
+login-next/yarn-debug.log*
+login-next/yarn-error.log*
+login-next/.pnpm-debug.log*
+
+# Otros
+login-next/.DS_Store
+login-next/*.pem
+login-next/*.tsbuildinfo
+login-next/next-env.d.ts
+
+
+# ========================
+# IGNORAR login-python (FastAPI)
+# ========================
+
+# Archivos compilados y caché
+login-python/__pycache__/
+login-python/*.py[cod]
+login-python/*.so
+
+# Entornos virtuales
+login-python/.env
+login-python/.venv
+login-python/venv/
+login-python/env/
+
+# Archivos de construcción
+login-python/.Python
+login-python/build/
+login-python/dist/
+login-python/*.egg-info/
+login-python/.installed.cfg
+login-python/*.egg
+login-python/MANIFEST
+
+# Archivos de prueba y cobertura
+login-python/htmlcov/
+login-python/.tox/
+login-python/.nox/
+login-python/.coverage*
+login-python/coverage.xml
+login-python/.pytest_cache/
+login-python/.hypothesis/
+
+# Archivos específicos de frameworks
+login-python/instance/
+login-python/.webassets-cache
+login-python/.scrapy
+login-python/docs/_build/
+
+# Archivos de configuración de herramientas
+login-python/.mypy_cache/
+login-python/.dmypy.json
+login-python/.pyre/
+login-python/.pytype/
+login-python/cython_debug/
+
+# Archivos temporales
+login-python/.ipynb_checkpoints
+login-python/*.log
+login-python/db.sqlite3
+login-python/db.sqlite3-journal
