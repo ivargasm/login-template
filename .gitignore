@@ -84,3 +84,14 @@ login-python/.ipynb_checkpoints
 login-python/*.log
 login-python/db.sqlite3
 login-python/db.sqlite3-journal
+
+# Ignorar archivos de caché de Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Ignorar migraciones compiladas de Alembic
+login-python/alembic/versions/__pycache__/
+login-python/alembic/versions/*.pyc
+
