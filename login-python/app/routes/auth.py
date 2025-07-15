@@ -96,8 +96,20 @@ def get_admin_user(user: User = Depends(get_current_user)):
 # cerra sesión
 @router.post("/logout")
 def logout(response: Response):
+    
+    # Creamos la respuesta JSON que queremos enviar
     response = JSONResponse(content={"message": "Logout exitoso"})
-    response.delete_cookie("access_token")
+    
+    # ¡LA PARTE IMPORTANTE!
+    # Borramos la cookie replicando TODOS los atributos del login
+    response.delete_cookie(
+        key="access_token",
+        secure=True,      # <-- Coincide con el login
+        httponly=True,    # <-- Coincide con el login
+        samesite="None",    # <-- Coincide con el login
+        path="/"          # <-- Añadirlo es una buena práctica para asegurar que coincide (es el default)
+    )
+    
     return response
 
 

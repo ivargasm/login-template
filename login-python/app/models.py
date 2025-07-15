@@ -2,10 +2,11 @@ from datetime import datetime
 from sqlalchemy import JSON, Boolean, Column, DateTime, Integer, String, ForeignKey, func
 from sqlalchemy.orm import relationship
 from app.db import Base
+from app.config import SCHEMA
 
 class Role(Base):
     __tablename__ = "roles"
-    __table_args__ = {"schema": "login"}
+    __table_args__ = {"schema": SCHEMA}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)  # Ejemplo: "user", "admin"
@@ -14,7 +15,7 @@ class Role(Base):
 
 class User(Base):
     __tablename__ = "users"
-    __table_args__ = {"schema": "login"}
+    __table_args__ = {"schema": SCHEMA}
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True, nullable=False)

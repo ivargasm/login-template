@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.db import Base, engine
-from app.config import DATABASE_URL
+from app.config import DATABASE_URL, SCHEMA
 
 # Importa tus modelos aquí
 from app.models import Role, User  # Asegúrate de importar todos los modelos
@@ -45,7 +45,7 @@ def run_migrations_offline():
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
         include_schemas=True,  # Asegúrate de incluir todos los esquemas
-        version_table_schema="login",  # Especificar el esquema donde está la tabla de versiones de Alembic
+        version_table_schema=SCHEMA,  # Especificar el esquema donde está la tabla de versiones de Alembic
     )
 
     with context.begin_transaction():
@@ -65,7 +65,7 @@ def run_migrations_online():
             connection=connection,
             target_metadata=target_metadata,
             include_schemas=True,  # Asegúrate de incluir todos los esquemas
-            version_table_schema="login",  # Especificar el esquema donde está la tabla de versiones de Alembic
+            version_table_schema=SCHEMA,  # Especificar el esquema donde está la tabla de versiones de Alembic
         )
 
         with context.begin_transaction():
