@@ -34,6 +34,19 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+def include_name(name, type_, parent_names):
+    """
+    Filtra los objetos de la base de datos para que Alembic solo
+    considere aquellos dentro del esquema 'contracts'.
+    """
+    if type_ == "schema":
+        # Incluye solo el esquema 'contracts' en la comparación
+        return name in [SCHEMA]
+    else:
+        # Para todos los demás objetos (tablas, índices, etc.),
+        # solo los incluye si pertenecen al esquema 'contracts'.
+        return parent_names.get("schema_name") in [SCHEMA]
+
 
 def run_migrations_offline():
     """Ejecuta migraciones en modo offline."""
@@ -46,6 +59,7 @@ def run_migrations_offline():
         dialect_opts={"paramstyle": "named"},
         include_schemas=True,  # Asegúrate de incluir todos los esquemas
         version_table_schema=SCHEMA,  # Especificar el esquema donde está la tabla de versiones de Alembic
+        include_name=include_name
     )
 
     with context.begin_transaction():
@@ -66,6 +80,7 @@ def run_migrations_online():
             target_metadata=target_metadata,
             include_schemas=True,  # Asegúrate de incluir todos los esquemas
             version_table_schema=SCHEMA,  # Especificar el esquema donde está la tabla de versiones de Alembic
+            include_name=include_name
         )
 
         with context.begin_transaction():
