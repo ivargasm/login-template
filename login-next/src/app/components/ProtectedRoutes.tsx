@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../store/Store";
+import SessionWatcher from "./SessionWatcher";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -17,5 +18,10 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
         checkAuth();
     }, [userAuth, router, userValid]);
 
-    return userAuth ? children : null;
+    return userAuth ? (
+        <>
+            {children}
+            <SessionWatcher />
+        </>
+    ) : null;
 }

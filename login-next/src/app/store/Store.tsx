@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import { login, fetchUser, logout, register } from "../lib/api";
+import { login, fetchUser, logout, register, refreshToken } from "../lib/api";
 import { redirect } from 'next/navigation';
 
 interface AuthState {
-    user: { id: string; username: string; email: string; role: string } | null;
+    user: { id: string; username: string; email: string; role: string; exp?: number } | null;
     setUser: (user: AuthState['user']) => void;
     logout: () => void;
     url: string;
@@ -11,6 +11,7 @@ interface AuthState {
     userAuth: boolean
     userValid: () => Promise<void>;
     registerUser: (username: string, email: string, password: string) => Promise<boolean>;
+    renewSession: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -58,5 +59,14 @@ export const useAuthStore = create<AuthState>((set) => ({
         }
         return success;
     },
+    renewSession: async () => {
+        try {
+            await refreshToken(useAuthStore.getState().url);
+            await useAuthStore.getState().userValid(); // Vuelve a cargar el estado de usuario para actualizar exp
+        } catch (error) {
+            console.error("Error renovando sesión", error);
+            useAuthStore.getState().logout();
+        }
+    }
     
 }));

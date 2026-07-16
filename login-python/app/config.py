@@ -24,3 +24,6 @@ MAIL_FROM = os.getenv("MAIL_FROM")
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 RESEND_MAIL_FROM = os.getenv("RESEND_MAIL_FROM")
 URL_FRONT = os.getenv("URL_FRONT", "http://localhost:3000")
+
+# tiempo de expiracion de tokens
+SESSION_EXPIRE_MINUTES = os.getenv("SESSION_EXPIRE_MINUTES")

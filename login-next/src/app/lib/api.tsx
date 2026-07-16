@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+
 
 export const fetchUser = async (url: string) => {
     const res = await fetch(`${url}/auth/me`, { credentials: 'include' });
@@ -42,7 +42,7 @@ export async function register(username: string, email: string, password: string
     }
 }
 
-export async function forgot_password(url: string, email: string){
+export async function forgot_password(url: string, email: string) {
     const res = await fetch(`${url}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -53,7 +53,7 @@ export async function forgot_password(url: string, email: string){
     return res;
 }
 
-export async function reset_password(url: string, new_password: string, token: string){
+export async function reset_password(url: string, new_password: string, token: string) {
     const res = await fetch(`${url}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -62,4 +62,13 @@ export async function reset_password(url: string, new_password: string, token: s
 
     if (!res.ok) throw new Error('Error al resetear la contraseña');
     return res;
+}
+
+export async function refreshToken(url: string) {
+    const res = await fetch(`${url}/auth/refresh`, {
+        method: "POST",
+        credentials: "include",
+    });
+    if (!res.ok) throw new Error('Error al renovar la sesión');
+    return res.json();
 }

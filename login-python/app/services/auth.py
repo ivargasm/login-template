@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 import jwt
-from app.config import SECRET_KEY
+from app.config import SECRET_KEY, SESSION_EXPIRE_MINUTES
 
 # Clave secreta para firmar los tokens
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = SESSION_EXPIRE_MINUTES
 RESET_PASSWORD_EXPIRE_MINUTES = 30  # Token válido por 30 minutos
 
 # Configurar encriptación de contraseñas

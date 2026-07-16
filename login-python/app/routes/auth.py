@@ -83,7 +83,8 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
         id=usuario.id,
         username=usuario.username,
         email=usuario.email,
-        role=usuario.role.name  # ✅ Convertimos el objeto Role a string
+        role=usuario.role.name,  # ✅ Convertimos el objeto Role a string
+        exp=payload.get("exp")
     )
 
 
@@ -145,3 +146,33 @@ def reset_password(request: ResetPasswordRequest, db: Session = Depends(get_db))
     return {"message": "Contraseña restablecida correctamente"}
 
 
+@router.post("/refresh")
+def refresh_token(request: Request, db: Session = Depends(get_db)):
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="No autenticado")
+
+    try:
+        payload = decode_access_token(token)
+        email = payload.get("sub")
+        if not email:
+            raise HTTPException(status_code=401, detail="Token inválido")
+    except Exception:
+        raise HTTPException(status_code=401, detail="Token inválido o expirado")
+
+    usuario = db.query(User).filter(User.email == email).first()
+    if not usuario:
+        raise HTTPException(status_code=401, detail="Usuario no encontrado")
+
+    new_access_token = create_access_token(data={"sub": usuario.email})
+
+    response = JSONResponse(content={"message": "Token renovado exitosamente"})
+    response.set_cookie(
+        key="access_token",
+        value=new_access_token,
+        httponly=True,
+        secure=True,
+        samesite="None", # Asumiendo None para dev o prod igual que en logout
+        path="/"
+    )
+    return response
