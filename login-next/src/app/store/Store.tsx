@@ -17,7 +17,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
     user: null,
     userAuth: false,
-    url: 'http://localhost:8000',
+    url: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000',
     setUser: (user) => set({ user }),
     loginUser: async (email, password) => {
         const data = await login(email, password, useAuthStore.getState().url);
