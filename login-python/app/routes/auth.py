@@ -38,7 +38,8 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
         id=nuevo_usuario.id,
         username=nuevo_usuario.username,
         email=nuevo_usuario.email,
-        role=nuevo_usuario.role.name  # ✅ Convertimos el objeto Role a string
+        role=nuevo_usuario.role.name,  # ✅ Convertimos el objeto Role a string
+        created_at=nuevo_usuario.created_at
     )
 
 # Login de usuario
@@ -84,7 +85,8 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
         username=usuario.username,
         email=usuario.email,
         role=usuario.role.name,  # ✅ Convertimos el objeto Role a string
-        exp=payload.get("exp")
+        exp=payload.get("exp"),
+        created_at=usuario.created_at
     )
 
 

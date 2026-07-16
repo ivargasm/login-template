@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import JSON, Boolean, Column, DateTime, Integer, String, ForeignKey, func
 from sqlalchemy.orm import relationship
 from app.db import Base
@@ -22,7 +22,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     role_id = Column(Integer, ForeignKey("login.roles.id"), nullable=False)
-    created_at = Column(DateTime, default=func.now())  # Fecha de creación
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())  # Última actualización
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))  # Fecha de creación
+    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))  # Última actualización
 
     role = relationship("Role")  # Relación con la tabla de roles

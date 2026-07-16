@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from passlib.context import CryptContext
+import bcrypt
 import jwt
 from app.config import SECRET_KEY, SESSION_EXPIRE_MINUTES
 
@@ -8,16 +8,15 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = SESSION_EXPIRE_MINUTES
 RESET_PASSWORD_EXPIRE_MINUTES = 30  # Token válido por 30 minutos
 
-# Configurar encriptación de contraseñas
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
+# Eliminar passlib ya que falla con bcrypt >= 4.0
 def hash_password(password: str) -> str:
     """Genera un hash seguro de la contraseña."""
-    return pwd_context.hash(password)
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifica si la contraseña ingresada coincide con el hash almacenado."""
-    return pwd_context.verify(plain_password, hashed_password)
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     """Genera un token JWT con expiración."""

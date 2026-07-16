@@ -26,4 +26,4 @@ RESEND_MAIL_FROM = os.getenv("RESEND_MAIL_FROM")
 URL_FRONT = os.getenv("URL_FRONT", "http://localhost:3000")
 
 # tiempo de expiracion de tokens
-SESSION_EXPIRE_MINUTES = os.getenv("SESSION_EXPIRE_MINUTES")
+SESSION_EXPIRE_MINUTES = int(os.getenv("SESSION_EXPIRE_MINUTES", "60"))

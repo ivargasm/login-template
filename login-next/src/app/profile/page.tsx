@@ -2,6 +2,7 @@
 
 import { useAuthStore } from "../store/Store";
 import ProtectedRoute from "../components/ProtectedRoutes";
+import { formatDateToLocal } from "../lib/utils";
 
 export default function ProfilePage() {
     const { user, logout } = useAuthStore();
@@ -13,6 +14,9 @@ export default function ProfilePage() {
                 <p><strong>Nombre:</strong> {user?.username}</p>
                 <p><strong>Email:</strong> {user?.email}</p>
                 <p><strong>Rol:</strong> {user?.role}</p>
+                <p className="mt-2 text-sm text-gray-500">
+                    <strong>Miembro desde:</strong> {formatDateToLocal(user?.created_at)}
+                </p>
                 <button
                     className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
                     onClick={logout}

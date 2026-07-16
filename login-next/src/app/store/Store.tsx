@@ -3,7 +3,7 @@ import { login, fetchUser, logout, register, refreshToken } from "../lib/api";
 import { redirect } from 'next/navigation';
 
 interface AuthState {
-    user: { id: string; username: string; email: string; role: string; exp?: number } | null;
+    user: { id: string; username: string; email: string; role: string; exp?: number; created_at?: string } | null;
     setUser: (user: AuthState['user']) => void;
     logout: () => void;
     url: string;
