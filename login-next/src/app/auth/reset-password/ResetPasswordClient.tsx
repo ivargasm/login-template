@@ -131,6 +131,14 @@ export default function ResetPasswordClient() {
                             </div>
                         </div>
                     </CardContent>
+                    <div className="px-6 pb-6 mt-4 flex items-center justify-center">
+                        <Button
+                            type="submit"
+                            className="w-full bg-gray-700 dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-primary/90 text-white"
+                        >
+                            Cambiar contraseña
+                        </Button>
+                    </div>
                 </Card>
             </form>
         </div>

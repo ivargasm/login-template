@@ -19,3 +19,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 MAIL_USERNAME = os.getenv("MAIL_USERNAME")
 MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 MAIL_FROM = os.getenv("MAIL_FROM")
+
+# Resend & Frontend Config
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+RESEND_MAIL_FROM = os.getenv("RESEND_MAIL_FROM")
+URL_FRONT = os.getenv("URL_FRONT", "http://localhost:3000")

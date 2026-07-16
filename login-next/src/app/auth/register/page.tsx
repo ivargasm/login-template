@@ -125,7 +125,10 @@ export default function RegisterPage() {
                         </div>
                         <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300" htmlFor="email">Correo electrónico</Label>
-                            <Input className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600" id="email" type="email" placeholder="tu@ejemplo.com" />
+                            <Input className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600" id="email" type="email" placeholder="tu@ejemplo.com" 
+                                value={form.email}
+                                onChange={(e) => setForm({ ...form, email: e.target.value.trim() })}
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300" htmlFor="password">Contraseña</Label>
@@ -133,8 +136,8 @@ export default function RegisterPage() {
                                 <Input className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600" id="password" 
                                     type={showPassword ? "text" : "password"} 
                                     placeholder="Ingresa tu contraseña" 
-                                    value={form.email}
-                                    onChange={(e) => setForm({ ...form, email: e.target.value.trim() })}
+                                    value={form.password}
+                                    onChange={(e) => setForm({ ...form, password: e.target.value.trim() })}
                                 />
                                 <Button
                                     type="button"

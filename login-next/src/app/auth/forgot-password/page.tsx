@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { forgot_password } from "../../lib/api";
 import { useAuthStore } from "../../store/Store";
 
@@ -12,13 +13,16 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 
 export default function ForgotPassword() {
+    const router = useRouter();
     const [email, setEmail] = useState("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [message, setMessage] = useState("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [error, setError] = useState("");
     const { url } = useAuthStore();
 
     const [isLoading, setIsLoading] = useState(false)
-    
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage("");
@@ -36,24 +40,29 @@ export default function ForgotPassword() {
             if (data) {
                 const result = await data.json();
                 setMessage(result.message);
-                toast.success("¡Operación exitosa!", { description: message })
+                toast.success("¡Correo enviado!", { description: result.message });
+
+                // Redirigir al login después de un momento para que el usuario lea el mensaje
+                setTimeout(() => {
+                    router.push("/auth/login");
+                }, 2000);
             } else {
                 setError("Error al enviar la solicitud.");
-                toast.error("¡Algo salio mal", { description: error })
+                toast.error("¡Algo salió mal!", { description: "No se pudo enviar el correo." });
             }
         } catch (error) {
-            if (error instanceof Error) {
-                setError(error.message || "Error al enviar la solicitud.");
-            } else {
-                setError("Error al enviar la solicitud.");
-            }
+            const errMsg = error instanceof Error ? error.message : "Error al enviar la solicitud.";
+            setError(errMsg);
+            toast.error("Error", { description: errMsg });
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    
+
     return (
         <div className={`min-h-screen flex items-center justify-center p-4`}>
-        
+
             <div className="w-full max-w-md">
                 <Card className="w-full bg-white dark:bg-gray-800">
                     <CardHeader className="space-y-1">

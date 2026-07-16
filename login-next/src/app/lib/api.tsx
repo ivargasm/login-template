@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 export const fetchUser = async (url: string) => {
     const res = await fetch(`${url}/auth/me`, { credentials: 'include' });
-    if (!res.ok) redirect("/auth/login");;
+    if (!res.ok) return null;
     return res.json();
 };
 
