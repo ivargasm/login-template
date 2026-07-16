@@ -15,6 +15,7 @@ login-next/build/
 
 # Configuración y Entorno
 login-next/.env*
+!login-next/.env.example
 login-next/.vercel
 
 # Archivos de prueba y cobertura
