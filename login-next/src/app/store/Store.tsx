@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { login, fetchUser, logout, register, refreshToken } from "../lib/api";
-import { redirect } from 'next/navigation';
 
 interface AuthState {
     user: { id: string; username: string; email: string; role: string; exp?: number; created_at?: string } | null;
@@ -11,7 +10,7 @@ interface AuthState {
     userAuth: boolean;
     isLoading: boolean;
     userValid: () => Promise<void>;
-    registerUser: (username: string, email: string, password: string) => Promise<boolean>;
+    registerUser: (username: string, email: string, password: string) => Promise<unknown>;
     renewSession: () => Promise<void>;
 }
 
@@ -55,17 +54,14 @@ export const useAuthStore = create<AuthState>((set) => ({
                 return;
             }
             set({ user: null, userAuth: false });
-            redirect("/login");
+            window.location.href = "/auth/login";
         } catch (error) {
             console.error("Error al cerrar sesión", error);
         }
     },
     registerUser: async (username, email, password) => {
-        const success = await register(username, email, password, useAuthStore.getState().url);
-        if (!success) {
-            return false;
-        }
-        return success;
+        const data = await register(username, email, password, useAuthStore.getState().url);
+        return data;
     },
     renewSession: async () => {
         try {

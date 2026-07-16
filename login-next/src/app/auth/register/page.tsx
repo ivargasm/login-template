@@ -78,11 +78,16 @@ export default function RegisterPage() {
         setGlobalError("");
         setIsSubmitting(true);
 
-        const success = await registerUser(data.username, data.email, data.password);
-        if (success) {
+        try {
+            await registerUser(data.username, data.email, data.password);
             router.push("/auth/login");
-        } else {
-            setGlobalError("Error al registrar. Inténtalo nuevamente.");
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setGlobalError(err.message);
+            } else {
+                setGlobalError("Ha ocurrido un error inesperado al registrarte.");
+            }
+        } finally {
             setIsSubmitting(false);
         }
     };

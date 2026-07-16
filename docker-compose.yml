@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: login-postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-login_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: 
+      context: ./login-python
+    container_name: login-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_NAME=${DB_NAME:-login_db}
+      - SCHEMA=${SCHEMA:-public}
+      - SECRET_KEY=${SECRET_KEY:-my_super_secret_key}
+      - URL_FRONT=${URL_FRONT:-http://localhost:3000}
+      - SESSION_EXPIRE_MINUTES=${SESSION_EXPIRE_MINUTES:-60}
+      - DATABASE_URL=postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@db:5432/${DB_NAME:-login_db}
+    volumes:
+      - ./login-python:/app  # Hot reloading volume
+      # Ignore virtual environments inside the container
+      - /app/.venv
+    depends_on:
+      - db
+
+  frontend:
+    build: 
+      context: ./login-next
+    container_name: login-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+    volumes:
+      - ./login-next:/app  # HMR volume
+      # Exclude node_modules so it uses the container's isolated node_modules
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

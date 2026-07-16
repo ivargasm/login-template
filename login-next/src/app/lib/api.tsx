@@ -14,7 +14,13 @@ export const login = async (email: string, password: string, url: string) => {
         credentials: 'include',
         body: JSON.stringify({ email, password }),
     });
-    if (!res.ok) throw new Error('Credenciales incorrectas');
+    if (res.status === 429) {
+        throw new Error('Demasiados intentos. Por favor, espera un minuto e inténtalo de nuevo.');
+    }
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.detail || 'Credenciales incorrectas');
+    }
     return res;
 };
 
@@ -28,18 +34,21 @@ export const logout = async (url: string) => {
 };
 
 export async function register(username: string, email: string, password: string, url: string) {
-    try {
-        const res = await fetch(`${url}/auth/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, email, password }),
-        });
+    const res = await fetch(`${url}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+    });
 
-        return res.json();
-    } catch (error) {
-        console.error("Error en el registro:", error);
-        return false;
+    if (res.status === 429) {
+        throw new Error('Demasiados intentos. Por favor, espera un minuto e inténtalo de nuevo.');
     }
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.detail || 'Error al registrar la cuenta');
+    }
+
+    return res.json();
 }
 
 export async function forgot_password(url: string, email: string) {

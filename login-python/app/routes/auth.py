@@ -9,13 +9,17 @@ from app.services.auth import create_reset_token, decode_access_token, decode_re
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.crud import get_user_by_email, get_role_by_name, update_user_password
 from app.services.email import send_reset_email
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 # Registro de usuario con rol
 @router.post("/register", response_model=UserResponse)
-def register(user_data: UserCreate, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def register(request: Request, user_data: UserCreate, db: Session = Depends(get_db)):
     if get_user_by_email(db, user_data.email):
         raise HTTPException(status_code=400, detail="El correo ya está registrado")
 
@@ -44,7 +48,8 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
 
 # Login de usuario
 @router.post("/login")
-def login(user_data: UserLogin, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def login(request: Request, response: Response, user_data: UserLogin, db: Session = Depends(get_db)):
 
     usuario = db.query(User).filter(User.email == user_data.email).first()
     if not usuario or not verify_password(user_data.password, usuario.hashed_password):
@@ -52,7 +57,6 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
 
     access_token = create_access_token(data={"sub": usuario.email})
 
-    response = Response()
     response.set_cookie(
         key="access_token",
         value=access_token,
@@ -60,7 +64,7 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
         secure=True,  # 🔒 Solo se envía por HTTPS
         samesite="Lax",  # ⚠️ Ajusta según necesidad "Lax" para desarrollo, "None" para producción
     )
-    return response
+    return {"message": "Login exitoso"}
 
 @router.get("/me", response_model=UserResponse)
 def get_current_user(request: Request, db: Session = Depends(get_db)):

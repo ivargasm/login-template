@@ -1,5 +1,12 @@
 /login/
 # ========================
+# ARCHIVOS GLOBALES Y DE ENTORNO
+# ========================
+.env
+.env.*
+!.env.example
+
+# ========================
 # IGNORAR login-next (Next.js)
 # ========================
 

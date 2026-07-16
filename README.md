@@ -1,13 +1,15 @@
-# Login con Next.js y FastAPI
+# Login con Next.js y FastAPI (Enterprise Boilerplate) 🚀
 
-Este repositorio contiene una estructura de login basada en **Next.js (frontend)** y **FastAPI (backend)**, utilizando **autenticación con sesiones y cookies HTTP-only** para mayor seguridad.
+Este repositorio contiene una estructura de inicio (boilerplate) robusta y lista para producción basada en **Next.js 14 (App Router)** y **FastAPI**, utilizando autenticación segura, validaciones avanzadas, rate limiting y despliegue rápido con Docker.
 
 ## 📂 Estructura del Proyecto
 
 ```
-login/
-├── login-next/      # Frontend con Next.js
-├── login-python/    # Backend con FastAPI
+login-template/
+├── login-next/      # Frontend con Next.js (React Hook Form, Zod, Zustand)
+├── login-python/    # Backend con FastAPI (SQLAlchemy, Alembic, SlowAPI)
+├── docker-compose.yml # Orquestación de contenedores para desarrollo
+├── .env             # Variables de entorno globales
 └── README.md        # Documentación del proyecto
 ```
 
@@ -16,100 +18,87 @@ login/
 ## 🚀 Tecnologías Utilizadas
 
 ### **Frontend (Next.js 14 + App Router)**
-- TypeScript
-- TailwindCSS
-- Zustand (manejo de estado)
-- Cookies HTTP-only (para autenticación segura)
-- API Routes para integración con el backend
-- ShadCN + Sonner para UI y notificaciones
+- **TypeScript**
+- **TailwindCSS** + **ShadCN** + **Lucide Icons**
+- **React Hook Form + Zod** (Validación de formularios tipada y segura)
+- **Zustand** (Manejo de estado global)
+- **Cookies HTTP-only** (Almacenamiento seguro de sesión)
+- **Skeletons/Loaders** (Para transiciones y cargas de UX premium)
 
 ### **Backend (FastAPI + PostgreSQL)**
-- FastAPI
-- SQLAlchemy + Alembic (ORM y migraciones)
-- Autenticación con sesiones
-- Gestión de usuarios (registro, login, logout, perfil)
-- Reset de contraseña con envío de correo
+- **FastAPI**
+- **SQLAlchemy + Alembic** (ORM y migraciones automáticas)
+- **SlowAPI** (Rate Limiting para evitar ataques de fuerza bruta)
+- **JWT** (Validación de sesión y refresh tokens en cookies)
+- **Resend** (Envío de emails para recuperación de contraseña)
+- Scripts de auto-inicialización de esquemas y sembrado de roles.
+
+### **Infraestructura**
+- **Docker & Docker Compose** (Entorno de desarrollo idéntico y portable con Hot-Reloading)
 
 ---
 
-## ⚡ Instalación y Configuración
+## ⚡ Instalación y Configuración (Modo Docker 🐳)
+
+¡La forma más rápida de empezar a programar!
 
 ### **1️⃣ Clonar el repositorio**
 ```bash
 git clone https://github.com/ivargasm/login-template.git
-cd login
+cd login-template
 ```
 
-### **2️⃣ Configurar el Backend (FastAPI)**
-```bash
-cd login-python
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
-#### **Configurar variables de entorno**
-Crear un archivo `.env` en `login-python/` con:
+### **2️⃣ Configurar las variables de entorno**
+El proyecto usa un único archivo `.env` en la raíz que alimenta tanto a la base de datos como al backend.
+
+Renombra el archivo de ejemplo o crea uno en la raíz (`.env`):
 ```env
-DATABASE_URL=postgresql://usuario:password@localhost:5432/db_name
-SECRET_KEY=supersecreto
+# /login-template/.env
+
+DB_HOST=db
+DB_USER=postgres
+DB_PORT=5432
+DB_NAME=login_db
+DB_PASSWORD=tu_contraseña_secreta
+
+SCHEMA=public
+SECRET_KEY=supersecreto_generado_con_openssl
 SESSION_EXPIRE_MINUTES=60
-MAIL_USERNAME=tu_correo@gmail.com
-MAIL_PASSWORD=tu_contraseña
-MAIL_FROM=tu_correo@gmail.com
-MAIL_PORT=587
-MAIL_SERVER=smtp.gmail.com
+
+# Configuración de Resend (Email)
+RESEND_API_KEY=tu_api_key
+RESEND_MAIL_FROM=no-reply@tudominio.com
+URL_FRONT=http://localhost:3000
 ```
 
-#### **Ejecutar migraciones y levantar el servidor**
+### **3️⃣ Levantar el ecosistema completo**
 ```bash
-alembic upgrade head
-uvicorn main:app --reload
+docker compose up --build
 ```
+*Docker descargará las imágenes, creará la base de datos, ejecutará las migraciones, sembrará los roles (`admin`, `user`) y levantará tanto el frontend en el puerto `3000` como el backend en el `8000`. ¡Cualquier cambio que hagas en el código se reflejará en tiempo real!*
 
----
-
-### **3️⃣ Configurar el Frontend (Next.js)**
+Para apagar el entorno:
 ```bash
-cd ../login-next
-npm install
-```
-#### **Configurar variables de entorno**
-Crear un archivo `.env.local` en `login-next/` con:
-```env
-NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
-```
-#### **Levantar el frontend**
-```bash
-npm run dev
+docker compose stop
 ```
 
 ---
 
 ## 🔑 Funcionalidades Implementadas
-✅ Registro de usuarios con validaciones
-✅ Inicio y cierre de sesión con cookies HTTP-only
-✅ Protección de rutas (solo accesibles si el usuario está autenticado)
-✅ Recuperación de contraseña con envío de email
-✅ Redirección automática si el usuario ya está autenticado
 
----
-
-## 🔐 Seguridad Implementada
-- Uso de **cookies HTTP-only** para evitar ataques XSS
-- **CSRF Token** incluido en las solicitudes de autenticación
-- **Hash de contraseñas** con `bcrypt`
-- **Sesiones en base de datos** en lugar de JWT
+✅ **Validación de Formularios Avanzada:** Formularios de registro y login completamente validados en tiempo real con *React Hook Form* y *Zod*.
+✅ **Rate Limiting:** Los endpoints críticos (`/login`, `/register`) están protegidos contra ataques de fuerza bruta (Límite de 5 peticiones/minuto).
+✅ **Seguridad de Sesión:** Tokens JWT almacenados estrictamente en **Cookies HTTP-only**, previniendo ataques XSS.
+✅ **UX Premium:** Implementación de *Skeletons* mientras la sesión se valida en segundo plano, evitando parpadeos bruscos en la interfaz.
+✅ **Auto-sembrado de Base de Datos:** Scripts automatizados (`pre_start.py`, `seed_roles.py`) que aseguran que la base de datos y sus roles básicos siempre estén presentes al arrancar.
+✅ **Recuperación de contraseña** integrada mediante correos electrónicos asíncronos con *Resend*.
 
 ---
 
 ## 📌 Mejoras Futuras
 - Agregar autenticación con OAuth (Google, GitHub, etc.)
-- Implementar un panel de administración
-- Enviar correos con un servicio como SendGrid en lugar de SMTP local
+- Implementar un panel de administración para gestión de usuarios.
 
 ---
 
-
-
 👨‍💻 **Desarrollado por:** Ismael Vargas Martinez
-
