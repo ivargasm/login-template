@@ -3,20 +3,25 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../store/Store";
 import SessionWatcher from "./SessionWatcher";
+import Loader from "./Loader";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const router = useRouter();
-    const { userAuth, userValid } = useAuthStore();
+    const { userAuth, userValid, isLoading } = useAuthStore();
 
     useEffect(() => {
         const checkAuth = async () => {
             await userValid();
-            if (!userAuth) {
+            if (!useAuthStore.getState().userAuth) {
                 router.push("/auth/login");
             }
         };
         checkAuth();
-    }, [userAuth, router, userValid]);
+    }, [router, userValid]);
+
+    if (isLoading) {
+        return <Loader />;
+    }
 
     return userAuth ? (
         <>

@@ -7,8 +7,9 @@ interface AuthState {
     setUser: (user: AuthState['user']) => void;
     logout: () => void;
     url: string;
-    loginUser: (email: string, password: string, ur:string) => Promise<void>;
-    userAuth: boolean
+    loginUser: (email: string, password: string, ur: string) => Promise<void>;
+    userAuth: boolean;
+    isLoading: boolean;
     userValid: () => Promise<void>;
     registerUser: (username: string, email: string, password: string) => Promise<boolean>;
     renewSession: () => Promise<void>;
@@ -17,6 +18,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
     user: null,
     userAuth: false,
+    isLoading: true,
     url: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000',
     setUser: (user) => set({ user }),
     loginUser: async (email, password) => {
@@ -32,21 +34,27 @@ export const useAuthStore = create<AuthState>((set) => ({
         set({ user: user_data });
     },
     userValid: async () => {
-        const data = await fetchUser(useAuthStore.getState().url);
-        if (!data) {
-            set({ userAuth: false, user: null });  // Asegurar que se limpie el estado
-            return;
+        set({ isLoading: true });
+        try {
+            const data = await fetchUser(useAuthStore.getState().url);
+            if (!data) {
+                set({ userAuth: false, user: null, isLoading: false });  // Asegurar que se limpie el estado
+                return;
+            }
+            set({ userAuth: true, user: data, isLoading: false });
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            set({ userAuth: false, user: null, isLoading: false });
         }
-        set({ userAuth: true, user: data });
     },
     // 📌 Cerrar sesión
-    logout: async() => {
+    logout: async () => {
         try {
             const data = await logout(useAuthStore.getState().url);
             if (!data) {
                 return;
             }
-            set({ user: null, userAuth: false});
+            set({ user: null, userAuth: false });
             redirect("/login");
         } catch (error) {
             console.error("Error al cerrar sesión", error);
@@ -68,5 +76,5 @@ export const useAuthStore = create<AuthState>((set) => ({
             useAuthStore.getState().logout();
         }
     }
-    
+
 }));
