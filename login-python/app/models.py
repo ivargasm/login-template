@@ -21,8 +21,8 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    role_id = Column(Integer, ForeignKey("login.roles.id"), nullable=False)
+    role_id = Column(Integer, ForeignKey(f"{SCHEMA}.roles.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))  # Fecha de creación
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))  # Última actualización
 
-    role = relationship("Role")  # Relación con la tabla de roles
+    role = relationship("Role", back_populates="users")  # Relación con la tabla de roles

@@ -10,6 +10,7 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+from app.config import SCHEMA
 
 # revision identifiers, used by Alembic.
 revision: str = '94d8793c2fd5'
@@ -25,12 +26,12 @@ def upgrade() -> None:
                existing_type=postgresql.TIMESTAMP(),
                type_=sa.DateTime(timezone=True),
                existing_nullable=True,
-               schema='login')
+               schema=SCHEMA)
     op.alter_column('users', 'updated_at',
                existing_type=postgresql.TIMESTAMP(),
                type_=sa.DateTime(timezone=True),
                existing_nullable=True,
-               schema='login')
+               schema=SCHEMA)
     # ### end Alembic commands ###
 
 
@@ -41,10 +42,10 @@ def downgrade() -> None:
                existing_type=sa.DateTime(timezone=True),
                type_=postgresql.TIMESTAMP(),
                existing_nullable=True,
-               schema='login')
+               schema=SCHEMA)
     op.alter_column('users', 'created_at',
                existing_type=sa.DateTime(timezone=True),
                type_=postgresql.TIMESTAMP(),
                existing_nullable=True,
-               schema='login')
+               schema=SCHEMA)
     # ### end Alembic commands ###
